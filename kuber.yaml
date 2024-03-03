@@ -1,0 +1,29 @@
+# plik kuber.yaml
+version: "3.9"
+
+services:
+  frontweb:
+    container_name: fronweb_kontener
+    image: gratiz/greeting-app:latest 
+    env_file:
+      - ./config/env_var.env
+    ports:
+      - "8000:5000"
+    depends_on:
+      - redis
+    volumes:
+      - mydata:/data
+    networks:
+      - mynetwork
+
+  redis:
+    image: "redis:alpine"
+    networks:
+      - mynetwork
+
+volumes:
+  mydata:
+
+networks:
+  mynetwork:
+    driver: bridge

@@ -1,0 +1,42 @@
+# plik docker-compose.yaml
+
+
+version: '3.9'
+services:
+  frontweb:
+    container_name: frontweb_kontener 
+    image:  gratiz/greeting-app:latest
+    build:
+      context: .
+      dockerfile: frontweb_dockerfile
+      args:
+        - BUILD_VERSION=2.0
+    env_file:
+      - ./config/env_var.env
+    ports:
+      - "8000:5000"
+    depends_on:
+      - redis
+    volumes:
+      - type: volume
+        source: mydata
+        target: /data
+        volume:
+          nocopy: true
+    networks:
+      - mynetwork
+  redis:
+    image: "redis:alpine"
+    networks:
+      - mynetwork
+  redis-service:
+    build:
+      context: .
+      dockerfile: Dockerfile-redis-service
+    networks:
+      - mynetwork
+volumes:
+  mydata:    
+networks:
+  mynetwork:
+    driver: bridge
